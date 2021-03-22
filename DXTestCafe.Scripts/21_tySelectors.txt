@@ -1,0 +1,12 @@
+
+Selector Filter Methods
+
+ .nth
+ .withText
+ .withExactText
+ .withAttribute
+ .filterVisible
+ .filterHidden
+ .filter
+
+ 

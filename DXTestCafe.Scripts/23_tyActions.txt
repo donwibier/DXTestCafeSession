@@ -1,0 +1,14 @@
+
+Actions
+
+- Clicking
+- Typing text
+- Navigating through app
+- Triggering key presses
+- Selecting text or text area context
+- Hover over elements
+- Pausing your test
+- Taking screen shots / video
+- Performing drag/drop 
+- Uploading files
+- Resizing browser window

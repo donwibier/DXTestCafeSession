@@ -1,0 +1,107 @@
+﻿@page "{nickname}/{seoname}"
+
+@model WebApplication1.Pages.DetailsModel
+@{
+}
+<script>
+	window.toggleactive = function(data) {				
+		$('#' + this.option("frm-id")).submit();
+	}
+</script>
+<div>
+	<p>A micro blog site where you can project your thoughts!</p>
+
+	<div class="card">
+		<div class="card-body">
+			<h4 class="card-title">@Model.CurrentPost.Title</h4>
+			<span class="text-muted text-right">Date @Model.CurrentPost.PostDate.ToString("d")</span>
+			<p class="card-text">@Html.Raw(Model.CurrentPost.Content)</p>
+
+		</div>
+		<div class="card-footer">
+			@Model.ResponseCount Reactions
+		</div>
+	</div>
+	<div class="pt-2"></div>
+	@if (User.Identity.IsAuthenticated && !Model.IsPostOwner)
+	{
+	<div class="card reply-box">
+		<div class="card-body">
+			<form method="post">
+				@(Html.DevExtreme().Form<ReplyViewModel>()
+				.Items(items =>
+				{
+					if (Model.IsPostOwner)
+					{
+						items.AddSimpleFor(m => m.Active)							
+							.Editor(e => e
+								.Switch()
+								.ID("ActiveCtrl")
+							)
+							.Label(l => l.Visible(false));
+					}
+					items.AddSimpleFor(m => m.Content)
+						.Editor(e => e
+							.TextArea()
+							.ID("ContentCtrl")
+							.Placeholder("Enter your thoughts")
+							.Width("100%")
+							.Height("150px")
+						)
+						.Label(l => l.Visible(false))
+						.IsRequired(true);
+
+					items.AddButton()						
+						.HorizontalAlignment(HorizontalAlignment.Right)
+						.ButtonOptions(b => b.Text("Post")
+							.ID("SubmitBtn")
+							.Type(ButtonType.Success)
+							.UseSubmitBehavior(true)
+						);
+				}).FormData(Model.ReplyModel)
+				)
+			</form>
+		</div>
+	</div>
+	}
+	else
+	{
+		<div class="login-register">
+			<span class="text-primary">If you want to reply, please login or register</span>
+		</div>
+	}
+
+	<div class="comments">
+
+		@if (Model.Replies.Count > 0)
+		{
+			foreach (var item in Model.Replies)
+			{
+				<div class="pt-2"></div>
+				<div class="@(item.Active ? "card bg-light" : "card bg-secondary")">
+					<div class="card-body">
+						@if (Model.IsPostOwner)
+						{
+							<form method="post" id="@string.Format("frm-{0}", item.Id)">
+								<input type="hidden" name="TogglePostId" value="@item.Id" />
+								@(Html.DevExtreme().Switch()
+											.ID(string.Format("switch-{0}", item.Id))
+											.Value(item.Active)
+											.Option("frm-id", string.Format("frm-{0}", item.Id))
+											.OnValueChanged("toggleactive"))
+							</form>
+						}
+
+						<span class="text-muted text-right">@item.PostDate.ToString("d"): @item.Nickname </span>
+						<p class="card-text comment-text">@item.Remark.Replace("\n", "<br />\n")</p>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<span class="text-info">No comments yet</span>
+		}
+	</div>
+</div>
+

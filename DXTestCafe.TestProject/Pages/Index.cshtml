@@ -1,0 +1,73 @@
+@page
+@model IndexModel
+
+@{
+	ViewData["Title"] = "Home page";
+}
+
+<div>
+	<p>A micro blog site where you can project your thoughts!</p>
+	@if (User.Identity.IsAuthenticated)
+	{
+		<div class="card">
+			<div class="card-body">
+				<form method="post">
+					@(Html.DevExtreme().Form<PostViewModel>()
+					.Items(items =>
+					{
+						items.AddSimpleFor(m => m.Title)
+							.Editor(e => e
+								.TextBox()
+								.ID("TitleCtrl")
+								.Placeholder("Post title"))
+							.Label(l => l.Visible(false))
+							.IsRequired(true);
+						items.AddSimpleFor(m => m.Content)
+							.Editor(e => e
+								.TextArea()
+								.ID("BodyCtrl")
+								.Placeholder("Enter your thoughts")
+								.Width("100%")
+								.Height("150px")
+							)
+							.Label(l => l.Visible(false))
+							.IsRequired(true);
+
+						items.AddSimpleFor(m => m.PostDate)
+							.Editor(e => e
+								.DateBox()
+								.ID("PostDateCtrl"));
+						items.AddButton()
+							.HorizontalAlignment(HorizontalAlignment.Right)
+							.ButtonOptions(b => b.Text("Post")
+								.ID("PostBtn")
+								.Type(ButtonType.Success)
+								.UseSubmitBehavior(true)
+							);
+					}).FormData(Model.PostModel)
+				)
+				</form>
+			</div>
+		</div>
+	}
+	<div class="p-2"></div>
+
+	<div id="reactions-box">
+		@foreach (var item in Model.Posts)
+		{
+			<div class="card reaction">
+				<div class="card-body">
+					<h4 class="card-title"><a href="@item.Url">@item.Title</a></h4>
+					<span class="text-muted text-right">Date @item.PostDate.ToString("d")</span>
+					<p class="card-text">@Html.Raw(item.Content)</p>
+
+				</div>
+				<div class="card-footer">
+					@*<span class="float-left">@item.ResponseCount Reactions</span>*@
+					<a href="@item.Url" class="btn btn-info float-right btn-reply">Reply</a>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+

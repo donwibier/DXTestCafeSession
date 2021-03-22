@@ -1,0 +1,17 @@
+
+Assertions
+
+- eql
+- notEql
+- ok
+- notOk
+- contains
+- notContains
+- typeOf
+- notTypeOf
+- gt / gte
+- lt / lte
+- within
+- notWithin
+- match
+- notMatch
